@@ -1,0 +1,36 @@
+[
+  {
+    "id": "f01",
+    "category": "core",
+    "description": "Project Harness Setup (Git, Progress, Init script)",
+    "steps": [
+      "Initialize git",
+      "Create features.json",
+      "Create progress.md",
+      "Create init.sh for environment setup",
+      "Commit initial state"
+    ],
+    "passes": false
+  },
+  {
+    "id": "f02",
+    "category": "notification",
+    "description": "Fix Discord Notification in daily routine",
+    "steps": [
+      "Debug why openclaw message failed (missing token)",
+      "Switch to Webhook or configure Token properly",
+      "Verify notification sends successfully"
+    ],
+    "passes": false
+  },
+  {
+    "id": "f03",
+    "category": "integration",
+    "description": "Standardize JSON Output for Future Dashboard",
+    "steps": [
+      "Modify main.py to save a structured JSON summary (decisions, reasons, prices)",
+      "Ensure format matches requirements for potential frontend (Bobo Office)"
+    ],
+    "passes": false
+  }
+]

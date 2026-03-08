@@ -63,6 +63,9 @@ VALID_MODELS = {
         "grok-4-fast-reasoning",
         "grok-4-fast-non-reasoning",
     ],
+    "nvidia": [
+        "gcp/google/gemini-3-pro",
+    ],
 }
 
 

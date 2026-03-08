@@ -1,7 +1,8 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import time
 import json
-from tradingagents.agents.utils.agent_utils import get_fundamentals, get_balance_sheet, get_cashflow, get_income_statement, get_insider_transactions
+from tradingagents.agents.utils.fundamental_data_tools import get_fundamentals, get_balance_sheet, get_cashflow, get_income_statement
+from tradingagents.dataflows.coin_gecko import get_crypto_data
 from tradingagents.dataflows.config import get_config
 
 
@@ -16,12 +17,16 @@ def create_fundamentals_analyst(llm):
             get_balance_sheet,
             get_cashflow,
             get_income_statement,
+            get_crypto_data, # Added crypto tool
         ]
 
         system_message = (
-            "You are a researcher tasked with analyzing fundamental information over the past week about a company. Please write a comprehensive report of the company's fundamental information such as financial documents, company profile, basic company financials, and company financial history to gain a full view of the company's fundamental information to inform traders. Make sure to include as much detail as possible. Do not simply state the trends are mixed, provide detailed and finegrained analysis and insights that may help traders make decisions."
-            + " Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."
-            + " Use the available tools: `get_fundamentals` for comprehensive company analysis, `get_balance_sheet`, `get_cashflow`, and `get_income_statement` for specific financial statements.",
+            "You are a researcher tasked with analyzing fundamental information about an asset (stock or cryptocurrency). "
+            "If the asset is a **Crypto** (e.g., BTC-USD, ETH-USD): Use the `get_crypto_data` tool to fetch market cap, volume, supply, and community stats. Do NOT use financial statement tools. "
+            "If the asset is a **Stock** (e.g., AAPL, 2330.TW): Write a comprehensive report including financial documents, company profile, basic financials, and financial history. "
+            "Make sure to include as much detail as possible. Provide detailed analysis and insights. "
+            + " Make sure to append a Markdown table at the end of the report to organize key points in the report."
+            + " Use the available tools: `get_fundamentals` for general analysis. For Stocks only, use `get_balance_sheet`, `get_cashflow`, and `get_income_statement`.",
         )
 
         prompt = ChatPromptTemplate.from_messages(
@@ -42,7 +47,7 @@ def create_fundamentals_analyst(llm):
         )
 
         prompt = prompt.partial(system_message=system_message)
-        prompt = prompt.partial(tool_names=", ".join([tool.name for tool in tools]))
+        prompt = prompt.partial(tool_names=", ".join([tool.name if hasattr(tool, "name") else tool.__name__ for tool in tools]))
         prompt = prompt.partial(current_date=current_date)
         prompt = prompt.partial(ticker=ticker)
 

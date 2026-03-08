@@ -11,6 +11,7 @@ from .y_finance import (
     get_insider_transactions as get_yfinance_insider_transactions,
 )
 from .yfinance_news import get_news_yfinance, get_global_news_yfinance
+from .coin_gecko import get_crypto_data  # New Crypto Tool
 from .alpha_vantage import (
     get_stock as get_alpha_vantage_stock,
     get_indicator as get_alpha_vantage_indicator,
@@ -47,7 +48,8 @@ TOOLS_CATEGORIES = {
             "get_fundamentals",
             "get_balance_sheet",
             "get_cashflow",
-            "get_income_statement"
+            "get_income_statement",
+            "get_crypto_data"  # Added new tool
         ]
     },
     "news_data": {
@@ -93,6 +95,10 @@ VENDOR_METHODS = {
     "get_income_statement": {
         "alpha_vantage": get_alpha_vantage_income_statement,
         "yfinance": get_yfinance_income_statement,
+    },
+    "get_crypto_data": {
+        "default": get_crypto_data,
+        "coingecko": get_crypto_data,
     },
     # news_data
     "get_news": {
@@ -160,3 +166,31 @@ def route_to_vendor(method: str, *args, **kwargs):
             continue  # Only rate limits trigger fallback
 
     raise RuntimeError(f"No available vendor for '{method}'")
+
+
+def get_stock_data(*args, **kwargs):
+    return route_to_vendor("get_stock_data", *args, **kwargs)
+
+def get_indicators(*args, **kwargs):
+    return route_to_vendor("get_indicators", *args, **kwargs)
+
+def get_fundamentals(*args, **kwargs):
+    return route_to_vendor("get_fundamentals", *args, **kwargs)
+
+def get_balance_sheet(*args, **kwargs):
+    return route_to_vendor("get_balance_sheet", *args, **kwargs)
+
+def get_cashflow(*args, **kwargs):
+    return route_to_vendor("get_cashflow", *args, **kwargs)
+
+def get_income_statement(*args, **kwargs):
+    return route_to_vendor("get_income_statement", *args, **kwargs)
+
+def get_news(*args, **kwargs):
+    return route_to_vendor("get_news", *args, **kwargs)
+
+def get_global_news(*args, **kwargs):
+    return route_to_vendor("get_global_news", *args, **kwargs)
+
+def get_insider_transactions(*args, **kwargs):
+    return route_to_vendor("get_insider_transactions", *args, **kwargs)

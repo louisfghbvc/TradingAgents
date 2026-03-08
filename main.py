@@ -1,5 +1,6 @@
 from tradingagents.graph.trading_graph import TradingAgentsGraph
 from tradingagents.default_config import DEFAULT_CONFIG
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
@@ -8,24 +9,27 @@ load_dotenv()
 
 # Create a custom config
 config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-5-mini"  # Use a different model
-config["quick_think_llm"] = "gpt-5-mini"  # Use a different model
-config["max_debate_rounds"] = 1  # Increase debate rounds
+# 使用本地 Gemini (免費版)
+config["deep_think_llm"] = "gemini-3.0-pro"
+config["quick_think_llm"] = "gemini-3.0-flash"
+config["max_debate_rounds"] = 1
 
-# Configure data vendors (default uses yfinance, no extra API keys needed)
 config["data_vendors"] = {
-    "core_stock_apis": "yfinance",           # Options: alpha_vantage, yfinance
-    "technical_indicators": "yfinance",      # Options: alpha_vantage, yfinance
-    "fundamental_data": "yfinance",          # Options: alpha_vantage, yfinance
-    "news_data": "yfinance",                 # Options: alpha_vantage, yfinance
+    "core_stock_apis": "yfinance",
+    "technical_indicators": "yfinance",
+    "fundamental_data": "yfinance",
+    "news_data": "yfinance",
 }
 
-# Initialize with custom config
+# Initialize
 ta = TradingAgentsGraph(debug=True, config=config)
 
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
+# Run for TODAY (NVDA)
+# 抓取昨天的日期作為交易日 (或是今天的日期)
+today = datetime.now().strftime("%Y-%m-%d")
+# 如果是週末，yfinance 可能會抓不到當天的即時價，但新聞還是可以搜
+print(f"🚀 Running Trading Agent for NVDA on {today}...")
 
-# Memorize mistakes and reflect
-# ta.reflect_and_remember(1000) # parameter is the position returns
+_, decision = ta.propagate("NVDA", today)
+print("\n--- FINAL DECISION ---\n")
+print(decision)

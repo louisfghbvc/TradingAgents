@@ -9,9 +9,10 @@ DEFAULT_CONFIG = {
     ),
     # LLM settings
     "llm_provider": "openai",
-    "deep_think_llm": "gpt-5.2",
-    "quick_think_llm": "gpt-5-mini",
-    "backend_url": "https://api.openai.com/v1",
+    "deep_think_llm": "gemini-3.0-flash",
+    "quick_think_llm": "gemini-3.0-flash",
+    "backend_url": "http://127.0.0.1:8000/v1",
+    "api_key": "dummy",
     # Provider-specific thinking configuration
     "google_thinking_level": None,      # "high", "minimal", etc.
     "openai_reasoning_effort": None,    # "medium", "high", "low"
