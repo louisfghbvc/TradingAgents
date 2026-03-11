@@ -1,7 +1,12 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import time
 import json
-from tradingagents.agents.utils.fundamental_data_tools import get_fundamentals, get_balance_sheet, get_cashflow, get_income_statement
+from tradingagents.agents.utils.fundamental_data_tools import (
+    get_fundamentals,
+    get_balance_sheet,
+    get_cashflow,
+    get_income_statement,
+)
 from tradingagents.dataflows.coin_gecko import get_crypto_data
 from tradingagents.dataflows.config import get_config
 
@@ -17,7 +22,7 @@ def create_fundamentals_analyst(llm):
             get_balance_sheet,
             get_cashflow,
             get_income_statement,
-            get_crypto_data, # Added crypto tool
+            get_crypto_data,  # Added crypto tool
         ]
 
         system_message = (
@@ -47,7 +52,14 @@ def create_fundamentals_analyst(llm):
         )
 
         prompt = prompt.partial(system_message=system_message)
-        prompt = prompt.partial(tool_names=", ".join([tool.name if hasattr(tool, "name") else tool.__name__ for tool in tools]))
+        prompt = prompt.partial(
+            tool_names=", ".join(
+                [
+                    tool.name if hasattr(tool, "name") else tool.__name__
+                    for tool in tools
+                ]
+            )
+        )
         prompt = prompt.partial(current_date=current_date)
         prompt = prompt.partial(ticker=ticker)
 
